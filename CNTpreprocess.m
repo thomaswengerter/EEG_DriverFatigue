@@ -1,4 +1,5 @@
 %% Pre-Processing of all EEG Channels
+% ACTION    ->      ASSIGNED VARIABLE
 % Import CNT files -> EEGraw
 % Apply Lowpassfilter and Highpassfilter -> EEG
 % Calculate Power Density Spectrum PSD
@@ -9,12 +10,12 @@
 % (mix randomly)
 close all;
 
-%% INPUTS
+%% CUSTOM INPUTS
 % SELECT input settings here
-path = 'C:\Users\Thomas\Documents\Uni\Master\UTS\Medical Instrumentation\MATLAB\figshare_Data\';
+path = 'C:\Users\Thomas\Documents\Uni\Master\UTS\Medical Instrumentation\MATLAB\figshare_Data\'; %path to EEG data folders /1, /2, ..., /11
 file = {'Normal state.cnt'; 'Fatigue state.cnt'}; %Select States to analyze
 patients = 5; %SELECT Patient(s)
-Channels = 22; %TP7: 22
+Channels = 22; %Select relevant Channels from Channel info (Channel TP7: 22)
 tepoch = 1; %SELECT length of epoch (in seconds)
 normalize = 1; %SELECT [1: normalize FFT spectrum of Epochs for AI training / 0: no normalization]
 
@@ -25,6 +26,8 @@ plot2 = 1; %PLOT raw data Power Density Spectra FrequencyDomain (FD)
 plot3 = 1; %PLOT filtered data (TD)
 plot4 = 1; %PLOT filtered data Power Density Spectra (FD)
 plot5 = 1; %PLOT normalized FFT of one epoch (FD)
+
+
 
 %% Global Variables
 fs = 1e3; %sampling frequency 1kHz
@@ -89,8 +92,8 @@ for channel = Channels
             end
 
             %% Filtering Raw Data
-
-            % 0.5Hz to 50Hz
+            % Implement Bandpassfilter with LPF and HPF
+            % Passband: 0.5Hz to 50Hz
             lpf = designfilt('lowpassfir', 'PassbandFrequency', fhpf, 'StopbandFrequency', fhpf*1.1, 'PassbandRipple', 0.01, 'StopbandAttenuation', 60, 'SampleRate', 1000,'DesignMethod','kaiserwin');
             hpf = designfilt('highpassfir', 'StopbandFrequency', 0.1*flpf, 'PassbandFrequency', flpf, 'StopbandAttenuation', 80, 'PassbandRipple', 0.01, 'SampleRate', 1000, 'DesignMethod', 'kaiserwin');
 
@@ -102,7 +105,6 @@ for channel = Channels
             % Filter EEG channel
             EEG{patient,meas} = filtfilt(lpf,EEGraw{patient,meas}); % apply LPF
             EEG{patient,meas} = filtfilt(hpf, EEG{patient,meas}); % apply HPF
-
 
 
             if plot3 == 1

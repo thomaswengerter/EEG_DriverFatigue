@@ -4,6 +4,7 @@
 % 1 Spectra extraction alpha beta
 % 2 Std deviation and mean of alpha beta time signal
 % 3 Sample Entropy
+% 4 Spectral Entropy
 % 5 Khushaba Fuzzy WPT feature extraction
 % save Features in 'F' in file 'FeaturesCh1'
 close all
